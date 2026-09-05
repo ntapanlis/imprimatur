@@ -8,6 +8,11 @@
   --shadow: rgba(42, 38, 34, 0.18);
   --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
   --serif-body: "EB Garamond", Georgia, serif;
+  --brutalist: "Archivo Black", "Arial Black", sans-serif;
+  --title-paper: #e8e4da;
+  --title-ink: #211d1a;
+  --title-highlight: rgba(255, 255, 255, 0.65);
+  --title-depth: rgba(0, 0, 0, 0.55);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,6 +24,10 @@
     --rule: #3a352c;
     --accent: #d1a374;
     --shadow: rgba(0, 0, 0, 0.5);
+    --title-paper: #201c18;
+    --title-ink: #0e0c0a;
+    --title-highlight: rgba(255, 255, 255, 0.12);
+    --title-depth: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -41,15 +50,27 @@ html, body {
 /* ---------- header / footer ---------- */
 
 .site-header {
-  padding: 40px 0 12px;
+  padding: 0;
+}
+
+.site-header .wrap {
+  padding-top: 40px;
+  padding-bottom: 36px;
+  background-color: var(--title-paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  background-blend-mode: multiply;
 }
 
 .site-title {
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: 2.6rem;
-  letter-spacing: 0.01em;
+  font-family: var(--brutalist);
+  font-weight: 400;
+  font-size: 3.2rem;
+  letter-spacing: 0.05em;
   margin: 0;
+  color: var(--title-ink);
+  text-shadow:
+    -1.5px -1.5px 0.5px var(--title-depth),
+    1.5px 1.5px 0.5px var(--title-highlight);
 }
 
 .site-intro {
