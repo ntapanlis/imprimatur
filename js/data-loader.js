@@ -1,6 +1,6 @@
-// Loads book data from your published Google Sheet (see README.md), falling
-// back to the local BOOKS array in data/books.js if the sheet isn't
-// configured yet, or can't be reached (offline, sheet not published, etc.).
+// Loads book data from your published Google Sheet (see README.md). The
+// sheet is the only source of book data - there is no local fallback copy,
+// so if it's unreachable the shelf will come up empty (see app.js).
 //
 // The sheet needs one row per book and a header row with exactly these
 // column names (any order): id, title, author, coverArtist, year, genre,
@@ -79,20 +79,20 @@
 
   async function loadBooks() {
     const url = window.SHEET_CSV_URL;
-    if (url) {
-      try {
-        const sep = url.includes("?") ? "&" : "?";
-        const res = await fetch(url + sep + "_=" + Date.now(), { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const text = await res.text();
-        const books = parseCSV(text).map(csvRowToBook).filter((b) => b.id);
-        if (books.length) return books;
-        console.warn("Sheet returned no rows with an id - showing local fallback data instead.");
-      } catch (err) {
-        console.warn("Could not load the spreadsheet, showing local fallback data instead.", err);
-      }
+    if (!url) {
+      console.warn("No SHEET_CSV_URL set in data/config.js - the shelf will be empty.");
+      return [];
     }
-    return window.BOOKS || [];
+    try {
+      const sep = url.includes("?") ? "&" : "?";
+      const res = await fetch(url + sep + "_=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const text = await res.text();
+      return parseCSV(text).map(csvRowToBook).filter((b) => b.id);
+    } catch (err) {
+      console.warn("Could not load the spreadsheet - the shelf will be empty.", err);
+      return [];
+    }
   }
 
   window.loadBooks = loadBooks;

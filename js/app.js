@@ -79,6 +79,13 @@
     const shelf = document.getElementById("shelf");
     shelf.innerHTML = "";
 
+    if (!books.length) {
+      shelf.classList.add("shelf-empty");
+      shelf.textContent = "Couldn't load the shelf right now - try refreshing in a moment.";
+      return;
+    }
+    shelf.classList.remove("shelf-empty");
+
     books.forEach((book, i) => {
       const { heightPx, widthPx, coverWidthPx } = spineDims(book);
       const hasEssay = !!(book.essayTitle && book.review);
