@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Schabo XCondensed";
+  src: url("../fonts/schabo/SCHABO-XCondensed.woff2") format("woff2"),
+       url("../fonts/schabo/SCHABO-XCondensed.woff") format("woff"),
+       url("../fonts/schabo/SCHABO-XCondensed.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --ink: #1a1a1a;
   --ink-soft: #6b6259;
@@ -8,7 +18,7 @@
   --shadow: rgba(42, 38, 34, 0.18);
   --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
   --serif-body: "EB Garamond", Georgia, serif;
-  --brutalist: "Archivo", "Arial Black", sans-serif;
+  --brutalist: "Schabo XCondensed", "Archivo", "Arial Black", sans-serif;
   --title-ink: #211d1a;
   --title-depth: rgba(0, 0, 0, 0.45);
   --title-depth-soft: rgba(0, 0, 0, 0.22);
@@ -53,9 +63,9 @@ html, body {
 
 .site-title {
   font-family: var(--brutalist);
-  font-weight: 800;
-  font-size: 3.2rem;
-  letter-spacing: 0.04em;
+  font-weight: 400;
+  font-size: 4.4rem;
+  letter-spacing: 0.01em;
   margin: 0;
   color: var(--title-ink);
   text-shadow: -2px -2px 0px var(--title-depth);
