@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPRIMATUR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=7">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1 class="site-title">IMPRIMATUR</h1>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="site-intro">A running shelf of books I've actually finished. Each spine is measured and sized to scale against my own copy — its own height, width, and depth — and stands here as itself, not a cover thumbnail. Hover one to see its face; click it to read what I made of it.</p>
+
+  <div id="shelf" class="shelf"></div>
+  <p class="hint">hover a spine to see its cover &middot; click to read the essay</p>
+
+  <section id="review-panel" class="review-panel" hidden>
+    <button id="review-close" class="review-close" aria-label="Close review">&times;</button>
+    <div id="review-content" class="review-content"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Design inspired by <a href="https://josefchladek.com/index/20" target="_blank" rel="noopener">josefchladek.com</a>.</p>
+  </div>
+</footer>
+
+<script src="data/config.js"></script>
+<script src="data/books.js"></script>
+<script src="js/data-loader.js"></script>
+<script src="js/app.js"></script>
+<script src="js/live-reload.js"></script>
+</body>
+</html>
