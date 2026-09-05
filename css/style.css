@@ -16,6 +16,8 @@
   --rule: #ddd4c6;
   --accent: #8a5a3b;
   --shadow: rgba(42, 38, 34, 0.18);
+  --wall-fallback: #e8e7e3;
+  --wall-texture: url("../images/bg/concrete.jpg");
   --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
   --serif-body: "EB Garamond", Georgia, serif;
   --brutalist: "Schabo XCondensed", "Archivo", "Arial Black", sans-serif;
@@ -36,6 +38,8 @@
     --title-ink: #d8d2c6;
     --title-depth: rgba(0, 0, 0, 0.7);
     --title-depth-soft: rgba(0, 0, 0, 0.45);
+    --wall-fallback: var(--paper);
+    --wall-texture: none;
   }
 }
 
@@ -44,7 +48,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--paper);
+  background-color: var(--wall-fallback);
+  background-image: var(--wall-texture);
+  background-repeat: repeat;
+  background-size: 700px 700px;
+  background-attachment: scroll;
   color: var(--ink);
   font-family: var(--serif-body);
 }
@@ -156,7 +164,7 @@ html, body {
   left: 0;
   height: 100%;
   backface-visibility: hidden;
-  box-shadow: 0 3px 8px var(--shadow);
+  box-shadow: 0 2px 3px var(--shadow);
 }
 
 .spine-face {
@@ -170,12 +178,12 @@ html, body {
   justify-content: center;
   padding: 10px 0;
   overflow: hidden;
-  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.12), inset -2px 0 4px rgba(0, 0, 0, 0.25), 0 3px 8px var(--shadow);
+  box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.12), inset -2px 0 4px rgba(0, 0, 0, 0.25), 0 2px 3px var(--shadow);
 }
 
 .spine-face.has-image {
   padding: 0;
-  box-shadow: 0 3px 8px var(--shadow);
+  box-shadow: 0 2px 3px var(--shadow);
 }
 
 .spine-face.has-image img {
