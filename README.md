@@ -17,10 +17,14 @@ From this folder:
 python3 serve-nocache.py
 ```
 
-Then open http://localhost:4173 in a browser. Leave the site open while you
-edit `data/books.js` - it reloads itself automatically a couple of seconds
-after you save (see `js/live-reload.js`; it's a no-op once published, so
-there's nothing to remove later).
+Then open http://localhost:4173 in a browser. It reads book data live from
+`data/config.js`'s `SHEET_CSV_URL`, same as the published site - there's no
+local copy of the book data to edit, so this is really just for previewing
+code/design changes.
+
+**Note:** there is no local fallback copy of the book data. The Google Sheet
+(see 2c below) is the only source of truth. If it's ever unreachable, the
+site shows a "couldn't load the shelf" message instead of stale books.
 
 ---
 
