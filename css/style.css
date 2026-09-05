@@ -107,7 +107,7 @@ html, body {
 
 .book:hover,
 .book.selected {
-  width: calc(var(--spine-w) + var(--cover-w));
+  width: var(--cover-w);
 }
 
 .book.selected {
