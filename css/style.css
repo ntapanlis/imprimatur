@@ -80,6 +80,13 @@ html, body {
   perspective: 1600px;
 }
 
+.shelf.shelf-empty {
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
 .hint {
   color: var(--ink-soft);
   font-style: italic;
