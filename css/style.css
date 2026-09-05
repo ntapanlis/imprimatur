@@ -175,6 +175,7 @@ html, body {
 
 .spine-face.has-image {
   padding: 0;
+  box-shadow: 0 3px 8px var(--shadow);
 }
 
 .spine-face.has-image img {
