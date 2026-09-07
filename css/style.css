@@ -133,9 +133,17 @@ h1.headline {
 
 /* ---------- shelf ---------- */
 
+.shelf-spacer {
+  flex: 1 1 0%;
+  min-height: 0;
+}
+
+.shelf-spacer--top {
+  flex-basis: 2vh;
+}
+
 .shelf-wrap {
-  margin-top: auto;
-  margin-bottom: auto;
+  flex: 0 0 auto;
 }
 
 .shelf {
@@ -143,7 +151,7 @@ h1.headline {
   align-items: flex-end;
   gap: 3px;
   min-height: 320px;
-  padding: 40px 4px 32px;
+  padding: 40px 0 21px;
   perspective: 1600px;
 }
 
@@ -158,8 +166,9 @@ h1.headline {
 .hint {
   color: var(--ink-soft);
   font-family: "Inter", sans-serif;
+  font-style: italic;
   font-size: 0.85rem;
-  margin: 0 0 40px 4px;
+  margin: 0 0 40px;
 }
 
 .book {
