@@ -52,17 +52,12 @@ html, body {
   position: absolute;
   top: 42px;
   left: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  cursor: pointer;
 }
 
-.menu-btn span {
-  width: 24px;
-  height: 2px;
-  background: var(--ink);
+.menu-btn img {
   display: block;
+  width: 28px;
+  height: auto;
 }
 
 .rail-label {
@@ -130,7 +125,7 @@ h1.headline {
   margin: 0;
   font-family: "PP Editorial Old Ultrabold", serif;
   font-weight: 400;
-  font-size: clamp(5.5rem, 11.3vw, 14rem);
+  font-size: clamp(3.85rem, 7.91vw, 9.8rem);
   line-height: 0.94;
   letter-spacing: 0;
   color: var(--title-fill);
@@ -147,7 +142,7 @@ h1.headline {
 }
 
 .shelf-spacer--top {
-  flex-basis: 2vh;
+  flex-basis: 5vh;
 }
 
 .shelf-spacer--bottom {
@@ -213,8 +208,8 @@ h1.headline {
 .hint {
   color: var(--ink-soft);
   font-family: "Inter", sans-serif;
-  font-style: italic;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.68rem;
   margin: 0 0 40px;
 }
 
@@ -347,7 +342,7 @@ h1.headline {
   position: relative;
   border-top: 1px solid var(--rule);
   padding: 40px 0 20px;
-  margin-top: 8px;
+  margin-top: 32px;
 }
 
 .review-close {
@@ -371,10 +366,10 @@ h1.headline {
 }
 
 .review-title {
-  font-family: var(--serif);
   font-weight: 500;
   font-size: 2.1rem;
   margin: 0 0 20px;
+  color: var(--ink);
 }
 
 .review-meta {
@@ -383,7 +378,7 @@ h1.headline {
   padding: 12px 0;
   margin: 0 0 16px;
   font-size: 0.9rem;
-  color: var(--ink-soft);
+  color: var(--ink);
   display: flex;
   gap: 48px;
 }
@@ -417,7 +412,7 @@ h1.headline {
 .review-date {
   font-size: 0.85rem;
   font-style: italic;
-  color: var(--ink-soft);
+  color: var(--ink);
   margin: 0 0 16px;
 }
 
@@ -425,6 +420,7 @@ h1.headline {
   font-size: 1.1rem;
   line-height: 1.7;
   margin: 0 0 1.1em;
+  text-align: justify;
 }
 
 .review-text p:first-of-type::first-letter {
@@ -459,7 +455,7 @@ h1.headline {
 
   h1.headline {
     margin-top: 28px;
-    font-size: clamp(2.2rem, 11.4vw, 7rem);
+    font-size: clamp(1.54rem, 7.98vw, 4.9rem);
     white-space: nowrap;
     text-shadow:
       -0.75px -0.75px 0.5px rgba(65, 48, 28, 0.5),
