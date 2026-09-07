@@ -254,6 +254,9 @@
       el.classList.toggle("selected", el.dataset.id === selectedId);
     });
 
+    const hint = document.querySelector(".hint");
+    if (hint) hint.hidden = !!selectedId;
+
     const panel = document.getElementById("review-panel");
     if (!selectedId) {
       panel.hidden = true;

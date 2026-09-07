@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "PP Editorial Old Ultrabold";
+  src: url("../fonts/PPEditorialOld-Ultrabold.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #f3eee8;
   --ink: #3a3631;
@@ -63,7 +71,7 @@ html, body {
   left: 50%;
   transform: translate(-50%, -50%) rotate(180deg);
   font-family: "Inter", sans-serif;
-  font-size: 0.884rem;
+  font-size: 1.768rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -120,9 +128,9 @@ html, body {
 
 h1.headline {
   margin: 0;
-  font-family: "Bodoni Moda", serif;
-  font-weight: 500;
-  font-size: clamp(4.2rem, 9vw, 13rem);
+  font-family: "PP Editorial Old Ultrabold", serif;
+  font-weight: 400;
+  font-size: clamp(5.5rem, 11.3vw, 14rem);
   line-height: 0.94;
   letter-spacing: 0;
   color: var(--title-fill);
@@ -140,6 +148,10 @@ h1.headline {
 
 .shelf-spacer--top {
   flex-basis: 2vh;
+}
+
+.shelf-spacer--bottom {
+  flex-grow: 0.444;
 }
 
 .shelf-wrap {
@@ -447,7 +459,7 @@ h1.headline {
 
   h1.headline {
     margin-top: 28px;
-    font-size: clamp(2.1rem, 12.5vw, 6.5rem);
+    font-size: clamp(2.2rem, 11.4vw, 7rem);
     white-space: nowrap;
     text-shadow:
       -0.75px -0.75px 0.5px rgba(65, 48, 28, 0.5),
