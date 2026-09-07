@@ -9,6 +9,91 @@
 
   const FALLBACK_COLORS = ["#5b4636", "#3d5a4c", "#7a3b3b", "#4a4a63", "#6b5b3e"];
 
+  // ---- blank placeholder spines ----
+  // Static, non-interactive spines that fill out the shelf alongside the
+  // real scanned books. Sizes come straight from each format's real-world
+  // height/depth, using the same PX_PER_MM scale as real books.
+  const BLANK_TYPES = [
+    { key: "standard-hardcover", heightMm: 216, widthMm: 26 },
+    { key: "trade-hardcover", heightMm: 229, widthMm: 33 },
+    { key: "mass-market-paperback", heightMm: 174, widthMm: 19 },
+    { key: "trade-paperback", heightMm: 216, widthMm: 23 },
+  ];
+  const blankSrc = (type) => `images/blank/${type.key}.png`;
+
+  const SHELF_GAP_PX = 3;
+  const SHELF_OVERFLOW_TARGET_PX = 60;
+  const BLANK_SEQUENCE_LENGTH = 80;
+  // Fixed seed so the blank arrangement is stable across visits and only
+  // ever extended (never reshuffled) as more blanks are needed.
+  const BLANK_SEQUENCE_SEED = 20260907;
+
+  function makeRng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0;
+      a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function buildBlankSequence(length) {
+    const rng = makeRng(BLANK_SEQUENCE_SEED);
+    const seq = [];
+    let lastIndex = -1;
+    for (let i = 0; i < length; i++) {
+      let idx;
+      do {
+        idx = Math.floor(rng() * BLANK_TYPES.length);
+      } while (idx === lastIndex && BLANK_TYPES.length > 1);
+      lastIndex = idx;
+      seq.push(idx);
+    }
+    return seq;
+  }
+
+  // Generated once per page load: stable for the whole session, so
+  // recalculating the count on resize only ever reveals more of this same
+  // sequence (or hides the tail of it) rather than reshuffling.
+  const blankSequence = buildBlankSequence(BLANK_SEQUENCE_LENGTH);
+
+  function blankDims(type) {
+    return {
+      heightPx: Math.round(type.heightMm * PX_PER_MM),
+      widthPx: Math.max(MIN_SPINE_WIDTH_PX, Math.round(type.widthMm * PX_PER_MM)),
+    };
+  }
+
+  // How many blanks are needed so the shelf extends slightly past the
+  // visible width (a small horizontal scroll to reach the end), without
+  // padding it out further than that. If the real books alone already
+  // fill or exceed the width, no blanks are added.
+  function computeBlankCount(containerWidthPx, realBooksWidthPx) {
+    if (!containerWidthPx || realBooksWidthPx >= containerWidthPx) return 0;
+    let total = realBooksWidthPx;
+    let count = 0;
+    const target = containerWidthPx + SHELF_OVERFLOW_TARGET_PX;
+    while (total < target && count < blankSequence.length) {
+      const { widthPx } = blankDims(BLANK_TYPES[blankSequence[count]]);
+      total += (realBooksWidthPx > 0 || count > 0 ? SHELF_GAP_PX : 0) + widthPx;
+      count++;
+    }
+    return count;
+  }
+
+  function renderBlank(type) {
+    const { heightPx, widthPx } = blankDims(type);
+    const el = document.createElement("div");
+    el.className = "blank-book";
+    el.setAttribute("aria-hidden", "true");
+    el.style.setProperty("--spine-w", widthPx + "px");
+    el.style.setProperty("--h", heightPx + "px");
+    el.innerHTML = `<img src="${blankSrc(type)}" alt="" loading="lazy">`;
+    return el;
+  }
+
   let books = [];
   let selectedId = null;
 
@@ -146,6 +231,17 @@
 
       shelf.appendChild(bookEl);
     });
+
+    // ---- fill remaining shelf width with randomized blank placeholders ----
+    const containerWidthPx = shelf.parentElement ? shelf.parentElement.clientWidth : 0;
+    const realBooksWidthPx = books.reduce((sum, book, i) => {
+      const { widthPx } = spineDims(book);
+      return sum + widthPx + (i > 0 ? SHELF_GAP_PX : 0);
+    }, 0);
+    const blankCount = computeBlankCount(containerWidthPx, realBooksWidthPx);
+    for (let i = 0; i < blankCount; i++) {
+      shelf.appendChild(renderBlank(BLANK_TYPES[blankSequence[i]]));
+    }
   }
 
   function toggleSelect(id) {
@@ -205,6 +301,20 @@
   document.addEventListener("DOMContentLoaded", async () => {
     books = await window.loadBooks();
     renderShelf();
+    updateSelection();
+
+    // Re-run the blank-count calculation (against the current viewport
+    // width) on resize, so the shelf keeps its slight overflow without
+    // reshuffling the already-visible blanks.
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        renderShelf();
+        updateSelection();
+      }, 200);
+    });
+
     document.getElementById("review-close").addEventListener("click", () => {
       selectedId = null;
       updateSelection();

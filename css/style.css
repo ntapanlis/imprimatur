@@ -144,6 +144,7 @@ h1.headline {
 
 .shelf-wrap {
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .shelf {
@@ -153,6 +154,40 @@ h1.headline {
   min-height: 320px;
   padding: 40px 0 21px;
   perspective: 1600px;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.shelf::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shelf::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shelf::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
+}
+
+.blank-book {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--spine-w);
+  height: var(--h);
+}
+
+.blank-book img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 2px 3px rgba(42, 38, 34, 0.3));
 }
 
 .shelf.shelf-empty {
