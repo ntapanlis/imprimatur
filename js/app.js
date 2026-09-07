@@ -14,7 +14,7 @@
 
   const byId = (id) => books.find((b) => b.id === id);
   const coverSrc = (book) => `images/${book.id}/cover.jpg`;
-  const spineSrc = (book) => `images/${book.id}/spine.jpg`;
+  const spineSrc = (book) => `images/${book.id}/spine.png`;
 
   const escapeHtml = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({
@@ -115,10 +115,19 @@
       const spineFaceEl = bookEl.querySelector(".spine-face");
       applyPlaceholderSpine(spineFaceEl, book, i);
 
-      // Try to upgrade to a real scanned spine at images/<id>/spine.jpg.
+      // Try to upgrade to a real scanned spine at images/<id>/spine.png.
       // If it doesn't exist (yet), the placeholder above just stays put.
       const spineProbe = new Image();
       spineProbe.onload = () => {
+        // Use the image's own aspect ratio at the book's physical height,
+        // rather than the depth-derived estimate, so the spine renders at
+        // its true proportions with no forced cropping.
+        const naturalW = spineProbe.naturalWidth;
+        const naturalH = spineProbe.naturalHeight;
+        if (naturalW && naturalH) {
+          const trueWidthPx = Math.max(MIN_SPINE_WIDTH_PX, Math.round(heightPx * (naturalW / naturalH)));
+          bookEl.style.setProperty("--spine-w", trueWidthPx + "px");
+        }
         spineFaceEl.classList.add("has-image");
         spineFaceEl.style.backgroundColor = "";
         spineFaceEl.innerHTML = `<img src="${spineSrc(book)}" alt="Spine of ${escapeHtml(book.title)}" loading="lazy">`;
