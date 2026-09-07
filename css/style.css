@@ -1,46 +1,14 @@
-@font-face {
-  font-family: "Schabo XCondensed";
-  src: url("../fonts/schabo/SCHABO-XCondensed.woff2") format("woff2"),
-       url("../fonts/schabo/SCHABO-XCondensed.woff") format("woff"),
-       url("../fonts/schabo/SCHABO-XCondensed.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
-  --ink: #1a1a1a;
-  --ink-soft: #6b6259;
-  --paper: #ffffff;
-  --paper-alt: #f2f2f0;
-  --rule: #ddd4c6;
+  --bg: #f3eee8;
+  --ink: #3a3631;
+  --ink-soft: rgba(58, 54, 49, 0.78);
+  --paper-alt: #ece4d9;
+  --rule: rgba(58, 54, 49, 0.22);
   --accent: #8a5a3b;
   --shadow: rgba(42, 38, 34, 0.18);
-  --wall-fallback: #e8e7e3;
-  --wall-texture: url("../images/bg/concrete.jpg");
   --serif: "Cormorant Garamond", "EB Garamond", Georgia, "Times New Roman", serif;
   --serif-body: "EB Garamond", Georgia, serif;
-  --brutalist: "Schabo XCondensed", "Archivo", "Arial Black", sans-serif;
-  --title-ink: #211d1a;
-  --title-depth: rgba(0, 0, 0, 0.45);
-  --title-depth-soft: rgba(0, 0, 0, 0.22);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #ece7dd;
-    --ink-soft: #a89f92;
-    --paper: #1b1815;
-    --paper-alt: #23201b;
-    --rule: #3a352c;
-    --accent: #d1a374;
-    --shadow: rgba(0, 0, 0, 0.5);
-    --title-ink: #d8d2c6;
-    --title-depth: rgba(0, 0, 0, 0.7);
-    --title-depth-soft: rgba(0, 0, 0, 0.45);
-    --wall-fallback: var(--paper);
-    --wall-texture: none;
-  }
+  --title-fill: #e7e1d9;
 }
 
 * { box-sizing: border-box; }
@@ -48,53 +16,120 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: var(--wall-fallback);
-  background-image: var(--wall-texture);
-  background-repeat: repeat;
-  background-size: 700px 700px;
-  background-attachment: scroll;
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--serif-body);
+  font-family: "Inter", sans-serif;
 }
 
-.wrap {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 36px;
+.stage {
+  display: flex;
+  min-height: 100vh;
 }
 
-/* ---------- header / footer ---------- */
+/* ---------- left rail ---------- */
 
-.site-header {
-  padding: 40px 0 12px;
+.rail {
+  width: 72px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.site-title {
-  font-family: var(--brutalist);
-  font-weight: 400;
-  font-size: 4.4rem;
+.menu-btn {
+  position: absolute;
+  top: 42px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.menu-btn span {
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  display: block;
+}
+
+.rail-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(180deg);
+  font-family: "Inter", sans-serif;
+  font-size: 0.884rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+/* ---------- main ---------- */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 42px 72px 16px;
+}
+
+.mobile-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kn-mark {
+  font-family: "Bodoni Moda", serif;
+  font-size: 1.9rem;
   letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.kn-mark sup {
+  font-size: 0.5em;
+  font-family: "Inter", sans-serif;
+}
+
+.mobile-bar .menu-btn {
+  position: static;
+}
+
+.mobile-rule {
+  display: none;
+  width: 100%;
+  height: 1px;
+  border: none;
+  background: var(--rule);
+  margin: 20px 0 0;
+}
+
+.top-row {
+  display: flex;
+}
+
+h1.headline {
   margin: 0;
-  color: var(--title-ink);
-  text-shadow: -2px -2px 0px var(--title-depth);
+  font-family: "Bodoni Moda", serif;
+  font-weight: 500;
+  font-size: clamp(4.2rem, 9vw, 13rem);
+  line-height: 0.94;
+  letter-spacing: 0;
+  color: var(--title-fill);
+  text-shadow:
+    -1px -1px 0.7px rgba(65, 48, 28, 0.5),
+     1px  1px 0.6px rgba(255, 255, 255, 0.85);
 }
-
-.site-intro {
-  max-width: 640px;
-  color: var(--ink-soft);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0 0 32px;
-}
-
-.site-footer {
-  margin-top: 80px;
-  padding: 20px 0 48px;
-  color: var(--ink-soft);
-  font-size: 0.85rem;
-}
-
-.site-footer a { color: var(--ink-soft); }
 
 /* ---------- shelf ---------- */
 
@@ -103,7 +138,7 @@ html, body {
   align-items: flex-end;
   gap: 3px;
   min-height: 320px;
-  padding: 16px 4px 32px;
+  padding: 40px 4px 32px;
   perspective: 1600px;
 }
 
@@ -112,11 +147,13 @@ html, body {
   justify-content: center;
   color: var(--ink-soft);
   font-style: italic;
+  font-family: var(--serif-body);
 }
 
 .hint {
   color: var(--ink-soft);
   font-style: italic;
+  font-family: var(--serif-body);
   font-size: 0.85rem;
   margin: 0 0 40px 4px;
 }
@@ -264,6 +301,7 @@ html, body {
 
 .review-content {
   max-width: 720px;
+  font-family: var(--serif-body);
 }
 
 .review-title {
@@ -330,4 +368,36 @@ html, body {
   line-height: 0.8;
   padding: 0.05em 0.08em 0 0;
   color: var(--accent);
+}
+
+/* ---------- footer ---------- */
+
+.bottom-row {
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.bottom-block {
+  font-size: 0.665rem;
+  line-height: 1.5;
+  color: #bfbbb6;
+}
+
+.bottom-block a { color: inherit; }
+
+@media (max-width: 900px) {
+  .rail { display: none; }
+  .mobile-bar { display: flex; }
+  .mobile-rule { display: block; }
+
+  .main { padding: 24px 24px 16px; }
+
+  h1.headline {
+    margin-top: 28px;
+    font-size: clamp(2.1rem, 12.5vw, 6.5rem);
+    white-space: nowrap;
+    text-shadow:
+      -0.75px -0.75px 0.5px rgba(65, 48, 28, 0.5),
+       0.75px  0.75px 0.4px rgba(255, 255, 255, 0.85);
+  }
 }
