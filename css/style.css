@@ -157,8 +157,7 @@ h1.headline {
 
 .hint {
   color: var(--ink-soft);
-  font-style: italic;
-  font-family: var(--serif-body);
+  font-family: "Inter", sans-serif;
   font-size: 0.85rem;
   margin: 0 0 40px 4px;
 }
