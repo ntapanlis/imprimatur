@@ -133,6 +133,11 @@ h1.headline {
 
 /* ---------- shelf ---------- */
 
+.shelf-wrap {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
 .shelf {
   display: flex;
   align-items: flex-end;
@@ -373,7 +378,6 @@ h1.headline {
 /* ---------- footer ---------- */
 
 .bottom-row {
-  margin-top: auto;
   padding-top: 40px;
 }
 
