@@ -154,7 +154,12 @@
     probe.crossOrigin = "anonymous";
     probe.onload = () => {
       sampleSpineColor(probe).then((color) => {
-        if (color) spineFaceEl.style.backgroundColor = color;
+        // The real spine.png may have already loaded and cleared this
+        // background while the cover was still being sampled - don't let
+        // a late-resolving placeholder colour clobber it.
+        if (color && !spineFaceEl.classList.contains("has-image")) {
+          spineFaceEl.style.backgroundColor = color;
+        }
       });
     };
     probe.src = coverSrc(book);
