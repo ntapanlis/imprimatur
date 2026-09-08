@@ -148,8 +148,11 @@
 
     const heights = books.map((b) => b.heightMm).concat(BLANK_TYPES.map((t) => t.heightMm));
     const maxHeightMm = heights.length ? Math.max(...heights) : 216;
+    const widths = books.map((b) => b.widthMm).concat(BLANK_TYPES.map((t) => t.widthMm));
+    const maxWidthMm = widths.length ? Math.max(...widths) : 140;
 
     const viewportH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const viewportW = window.visualViewport ? window.visualViewport.width : window.innerWidth;
 
     const openingCs = getComputedStyle(opening);
     const openingPad = parseFloat(openingCs.paddingTop) + parseFloat(openingCs.paddingBottom);
@@ -189,8 +192,28 @@
       MOBILE_FIT_SAFETY_PX;
 
     const bookHeightPx = Math.max(80, available);
+    const heightBasedPxPerMm = bookHeightPx / maxHeightMm;
 
-    const computed = bookHeightPx / maxHeightMm;
+    // A selected book's cover is widthMm wide at this same scale - on a
+    // real phone width and height are correlated, so fitting the height
+    // alone happened to keep covers narrower than the screen too, but nothing
+    // here actually constrained width. A short, very narrow viewport (e.g. a
+    // desktop browser window narrowed without also shrinking its height)
+    // exposes that: no amount of horizontal scrolling can reveal a cover
+    // that's simply wider than the viewport. Cap the scale so the widest
+    // cover fits with a little margin on each side too. A scrolled-into-view
+    // cover's left edge lands at .main's own padding plus the scroll margin
+    // (see scrollSelectedIntoView), so that padding has to come off the
+    // budget as well, not just the margin twice.
+    const main = document.querySelector(".main");
+    const mainPaddingLeft = main ? parseFloat(getComputedStyle(main).paddingLeft) : 24;
+    const widthBudgetPx = Math.max(
+      80,
+      viewportW - mainPaddingLeft - 2 * SELECTED_SCROLL_MARGIN_PX
+    );
+    const widthBasedPxPerMm = widthBudgetPx / maxWidthMm;
+
+    const computed = Math.min(heightBasedPxPerMm, widthBasedPxPerMm);
     PX_PER_MM = Math.max(MOBILE_PX_PER_MM_MIN, Math.min(MOBILE_PX_PER_MM_MAX, computed));
     MIN_SPINE_WIDTH_PX = Math.max(
       10,
