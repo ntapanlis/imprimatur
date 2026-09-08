@@ -50,14 +50,47 @@ html, body {
 
 .menu-btn {
   position: absolute;
-  top: 42px;
-  left: 24px;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.menu-btn img {
+.cross-mark {
+  position: relative;
   display: block;
-  width: 28px;
-  height: auto;
+  width: 38px;
+  height: 38px;
+}
+
+.cross-layer {
+  position: absolute;
+  inset: 0;
+  mask-image: url("../icons/marginalia-mark.png");
+  -webkit-mask-image: url("../icons/marginalia-mark.png");
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+.cross-layer--main {
+  background-color: var(--ink-soft);
+}
+
+.cross-layer--light {
+  background-color: #fff;
+  opacity: 0.2;
+  filter: blur(0.5px);
+  transform: translate(-0.5px, -0.5px);
+}
+
+.cross-layer--dark {
+  background-color: #000;
+  opacity: 0.12;
+  filter: blur(0.7px);
+  transform: translate(0.5px, 0.5px);
 }
 
 .rail-label {
@@ -66,7 +99,7 @@ html, body {
   left: 50%;
   transform: translate(-50%, -50%) rotate(180deg);
   font-family: "Inter", sans-serif;
-  font-size: 1.768rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -83,7 +116,7 @@ html, body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 42px 72px 16px;
+  padding: clamp(72px, 13vh, 140px) 72px 16px;
 }
 
 .mobile-bar {
@@ -106,6 +139,7 @@ html, body {
 
 .mobile-bar .menu-btn {
   position: static;
+  transform: none;
 }
 
 .mobile-rule {
@@ -125,7 +159,7 @@ h1.headline {
   margin: 0;
   font-family: "PP Editorial Old Ultrabold", serif;
   font-weight: 400;
-  font-size: clamp(3.85rem, 7.91vw, 9.8rem);
+  font-size: clamp(3.08rem, 6.33vw, 7.84rem);
   line-height: 0.94;
   letter-spacing: 0;
   color: var(--title-fill);
@@ -146,7 +180,7 @@ h1.headline {
 }
 
 .shelf-spacer--bottom {
-  flex-grow: 0.444;
+  flex-grow: 0.08;
 }
 
 .shelf-wrap {
@@ -208,9 +242,9 @@ h1.headline {
 .hint {
   color: var(--ink-soft);
   font-family: "Inter", sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 0.68rem;
-  margin: 0 0 40px;
+  margin: 2px 0 0;
 }
 
 .book {
@@ -435,7 +469,7 @@ h1.headline {
 /* ---------- footer ---------- */
 
 .bottom-row {
-  padding-top: 40px;
+  padding-top: 24px;
 }
 
 .bottom-block {
@@ -452,6 +486,8 @@ h1.headline {
   .mobile-rule { display: block; }
 
   .main { padding: 24px 24px 16px; }
+
+  .cross-mark { width: 32px; height: 32px; }
 
   h1.headline {
     margin-top: 28px;

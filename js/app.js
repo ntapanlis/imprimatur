@@ -4,8 +4,8 @@
   // ---- physical-to-pixel scaling for spines ----
   // Spine width, spine height, and cover width all come straight from the
   // book's measured heightMm / widthMm / depthMm.
-  const PX_PER_MM = 2.05;
-  const MIN_SPINE_WIDTH_PX = 16;
+  const PX_PER_MM = 1.7425;
+  const MIN_SPINE_WIDTH_PX = 14;
 
   const FALLBACK_COLORS = ["#5b4636", "#3d5a4c", "#7a3b3b", "#4a4a63", "#6b5b3e"];
 
