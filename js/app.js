@@ -357,21 +357,40 @@
 
   const SELECTED_SCROLL_MARGIN_PX = 16;
 
+  const cssPx = (el, prop) => parseFloat(getComputedStyle(el).getPropertyValue(prop)) || 0;
+
   // A selected book widens in place (its left edge is fixed by the flex
   // layout, only the right edge grows), so a book further along the shelf
   // can pop its cover open past the visible edge with no indication a
   // scroll would reveal the rest. Bring it fully into view, with a little
   // breathing room on the leading edge.
+  //
+  // Switching selection straight from one book to another interrupts the
+  // previous book's width transition mid-flight, so live geometry
+  // (getBoundingClientRect/scrollWidth) can momentarily reflect that
+  // in-between width rather than its settled spine-width. Compute the
+  // target from the --spine-w/--cover-w custom properties instead - those
+  // hold the final values throughout the animation, so this is correct
+  // regardless of transition timing.
   function scrollSelectedIntoView(bookEl) {
     const shelf = document.getElementById("shelf");
     if (!shelf || !bookEl) return;
-    const shelfRect = shelf.getBoundingClientRect();
-    const bookRect = bookEl.getBoundingClientRect();
-    const bookLeftInContent = bookRect.left - shelfRect.left + shelf.scrollLeft;
-    const maxScrollLeft = Math.max(0, shelf.scrollWidth - shelf.clientWidth);
+    const gap = cssPx(shelf, "column-gap") || SHELF_GAP_PX;
+
+    let bookLeftInContent = 0;
+    let totalWidth = 0;
+    for (const child of shelf.children) {
+      const isSelected = child === bookEl;
+      const w = isSelected ? cssPx(child, "--cover-w") : cssPx(child, "--spine-w");
+      if (isSelected) bookLeftInContent = totalWidth;
+      totalWidth += w + gap;
+    }
+
+    const maxScrollLeft = Math.max(0, totalWidth - gap - shelf.clientWidth);
     const target = Math.max(0, Math.min(maxScrollLeft, bookLeftInContent - SELECTED_SCROLL_MARGIN_PX));
-    // Plain assignment (animated via the .shelf scroll-behavior:smooth CSS
-    // rule) rather than scrollTo({behavior:"smooth"}) - broader support.
+    // Plain, instant assignment - both scrollTo({behavior:"smooth"}) and
+    // scroll-behavior:smooth were unreliable here (the animation can fail
+    // to reach its target), so correctness wins over a scroll animation.
     shelf.scrollLeft = target;
   }
 
