@@ -4,8 +4,30 @@
   // ---- physical-to-pixel scaling for spines ----
   // Spine width, spine height, and cover width all come straight from the
   // book's measured heightMm / widthMm / depthMm.
-  const PX_PER_MM = 1.7425;
-  const MIN_SPINE_WIDTH_PX = 14;
+  const MOBILE_BREAKPOINT_PX = 900;
+  const DESKTOP_PX_PER_MM = 1.7425;
+  const DESKTOP_MIN_SPINE_WIDTH_PX = 14;
+  // Reference scale the mobile computation derives its MIN_SPINE_WIDTH_PX
+  // from, so a shrunken mobile scale also shrinks the spine-width floor
+  // proportionally (uniform scaling, same principle as the desktop 0.85x).
+  const REFERENCE_PX_PER_MM = 2.05;
+  const REFERENCE_MIN_SPINE_WIDTH_PX = 16;
+  const MOBILE_PX_PER_MM_MIN = 0.9;
+  // High enough that it only ever guards against a pathological viewport
+  // (e.g. very tall and narrow); the normal case is the fit computation
+  // itself deciding the scale, not this ceiling.
+  const MOBILE_PX_PER_MM_MAX = 3.2;
+  // Small fixed breathing room above/below the shelf on mobile - must match
+  // the .shelf-spacer--top/--bottom mobile rule in css/style.css. Mobile
+  // doesn't use the desktop's flex-grow spacers (which exist to soak up
+  // leftover space); instead the book scale itself is computed to fill the
+  // remaining viewport, so these stay small and fixed.
+  const MOBILE_TOP_SPACER_PX = 12;
+  const MOBILE_BOTTOM_SPACER_PX = 8;
+  const MOBILE_FIT_SAFETY_PX = 4;
+
+  let PX_PER_MM = DESKTOP_PX_PER_MM;
+  let MIN_SPINE_WIDTH_PX = DESKTOP_MIN_SPINE_WIDTH_PX;
 
   const FALLBACK_COLORS = ["#5b4636", "#3d5a4c", "#7a3b3b", "#4a4a63", "#6b5b3e"];
 
@@ -96,6 +118,80 @@
 
   let books = [];
   let selectedId = null;
+
+  // Recompute PX_PER_MM for the current viewport. Desktop keeps its fixed,
+  // hand-tuned scale. On mobile there's no flex-grow spacer soaking up
+  // leftover space (see .shelf-spacer--top/--bottom mobile rule) - instead
+  // this measures everything else in the opening section (header, hairline,
+  // title, caption, shelf's own padding) against the real viewport height
+  // and derives whatever book scale makes the rest fit, so the full shelf
+  // and caption are visible without scrolling on first load.
+  function updateScaleForViewport() {
+    if (window.innerWidth > MOBILE_BREAKPOINT_PX) {
+      PX_PER_MM = DESKTOP_PX_PER_MM;
+      MIN_SPINE_WIDTH_PX = DESKTOP_MIN_SPINE_WIDTH_PX;
+      return;
+    }
+
+    const opening = document.querySelector(".opening");
+    const mobileBar = document.querySelector(".mobile-bar");
+    const mobileRule = document.querySelector(".mobile-rule");
+    const topRow = document.querySelector(".top-row");
+    const hint = document.querySelector(".hint");
+    const shelf = document.getElementById("shelf");
+    if (!opening || !mobileBar || !mobileRule || !topRow || !hint || !shelf) return;
+
+    const heights = books.map((b) => b.heightMm).concat(BLANK_TYPES.map((t) => t.heightMm));
+    const maxHeightMm = heights.length ? Math.max(...heights) : 216;
+
+    const viewportH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+    const openingCs = getComputedStyle(opening);
+    const openingPad = parseFloat(openingCs.paddingTop) + parseFloat(openingCs.paddingBottom);
+
+    const mobileBarH = mobileBar.getBoundingClientRect().height;
+
+    const ruleCs = getComputedStyle(mobileRule);
+    const ruleH =
+      mobileRule.getBoundingClientRect().height +
+      parseFloat(ruleCs.marginTop) +
+      parseFloat(ruleCs.marginBottom);
+
+    const topRowH = topRow.getBoundingClientRect().height;
+    const hintH = hint.getBoundingClientRect().height;
+
+    const shelfCs = getComputedStyle(shelf);
+    const shelfPadTop = parseFloat(shelfCs.paddingTop);
+    // The caption's own negative top margin pulls it up into part of the
+    // shelf's bottom padding (that padding exists to clear the scrollbar
+    // and the selected-book shift, not to make room for the caption) - so
+    // only the part of shelfPadBottom the caption doesn't already reclaim
+    // counts as extra space to budget for.
+    const hintCs = getComputedStyle(hint);
+    const effectiveShelfBottomGap = parseFloat(shelfCs.paddingBottom) + parseFloat(hintCs.marginTop);
+
+    const available =
+      viewportH -
+      openingPad -
+      mobileBarH -
+      ruleH -
+      topRowH -
+      MOBILE_TOP_SPACER_PX -
+      MOBILE_BOTTOM_SPACER_PX -
+      shelfPadTop -
+      effectiveShelfBottomGap -
+      hintH -
+      MOBILE_FIT_SAFETY_PX;
+
+    const bookHeightPx = Math.max(80, available);
+
+    const computed = bookHeightPx / maxHeightMm;
+    PX_PER_MM = Math.max(MOBILE_PX_PER_MM_MIN, Math.min(MOBILE_PX_PER_MM_MAX, computed));
+    MIN_SPINE_WIDTH_PX = Math.max(
+      10,
+      Math.round(REFERENCE_MIN_SPINE_WIDTH_PX * (PX_PER_MM / REFERENCE_PX_PER_MM))
+    );
+  }
 
   const byId = (id) => books.find((b) => b.id === id);
   const coverSrc = (book) => `images/${book.id}/cover.jpg`;
@@ -308,20 +404,45 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     books = await window.loadBooks();
+    updateScaleForViewport();
     renderShelf();
     updateSelection();
 
-    // Re-run the blank-count calculation (against the current viewport
-    // width) on resize, so the shelf keeps its slight overflow without
+    // Re-run the scale and blank-count calculations (against the current
+    // viewport) on resize, so orientation changes and window resizing keep
+    // the shelf correctly fitted and its slight overflow intact, without
     // reshuffling the already-visible blanks.
     let resizeTimer = null;
-    window.addEventListener("resize", () => {
+    const scheduleRefit = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
+        updateScaleForViewport();
         renderShelf();
         updateSelection();
       }, 200);
+    };
+    window.addEventListener("resize", scheduleRefit);
+    // Some browsers fire orientationchange without a reliably-timed resize
+    // alongside it (the viewport dimensions can lag a tick behind), so
+    // re-check shortly after too.
+    window.addEventListener("orientationchange", () => {
+      scheduleRefit();
+      setTimeout(scheduleRefit, 300);
     });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleRefit);
+    }
+
+    // Web font swap can shift the header/title/caption's rendered heights
+    // slightly after the mobile fit was first computed - true those up once
+    // fonts are done loading.
+    if (window.innerWidth <= MOBILE_BREAKPOINT_PX && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        updateScaleForViewport();
+        renderShelf();
+        updateSelection();
+      });
+    }
 
     document.getElementById("review-close").addEventListener("click", () => {
       selectedId = null;

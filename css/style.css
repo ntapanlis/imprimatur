@@ -32,6 +32,7 @@ html, body {
 .stage {
   display: flex;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 /* ---------- left rail ---------- */
@@ -113,10 +114,17 @@ html, body {
 .main {
   flex: 1;
   min-width: 0;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: clamp(72px, 13vh, 140px) 72px 16px;
+  padding: 0 72px;
+}
+
+.opening {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(72px, 13vh, 140px) 0 16px;
 }
 
 .mobile-bar {
@@ -125,16 +133,14 @@ html, body {
   justify-content: space-between;
 }
 
-.kn-mark {
-  font-family: "Bodoni Moda", serif;
-  font-size: 1.9rem;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-}
-
-.kn-mark sup {
-  font-size: 0.5em;
+.mobile-marginalia {
   font-family: "Inter", sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 .mobile-bar .menu-btn {
@@ -180,7 +186,7 @@ h1.headline {
 }
 
 .shelf-spacer--bottom {
-  flex-grow: 0.08;
+  flex-grow: 0.3;
 }
 
 .shelf-wrap {
@@ -468,8 +474,9 @@ h1.headline {
 
 /* ---------- footer ---------- */
 
-.bottom-row {
-  padding-top: 24px;
+.site-footer {
+  flex: 0 0 auto;
+  padding: 32px 0 calc(32px + env(safe-area-inset-bottom, 0px));
 }
 
 .bottom-block {
@@ -485,7 +492,11 @@ h1.headline {
   .mobile-bar { display: flex; }
   .mobile-rule { display: block; }
 
-  .main { padding: 24px 24px 16px; }
+  .main {
+    padding: 0 max(24px, env(safe-area-inset-right)) 0 max(24px, env(safe-area-inset-left));
+  }
+
+  .opening { padding: 24px 0 16px; }
 
   .cross-mark { width: 32px; height: 32px; }
 
@@ -497,4 +508,7 @@ h1.headline {
       -0.75px -0.75px 0.5px rgba(65, 48, 28, 0.5),
        0.75px  0.75px 0.4px rgba(255, 255, 255, 0.85);
   }
+
+  .shelf-spacer--top { flex: 0 0 12px; }
+  .shelf-spacer--bottom { flex: 0 0 8px; }
 }
