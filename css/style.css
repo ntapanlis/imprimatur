@@ -193,7 +193,7 @@ h1.headline {
   align-items: flex-end;
   gap: 3px;
   min-height: 320px;
-  padding: 40px 0 21px;
+  padding: 40px 0 42px;
   perspective: 1600px;
   width: 100%;
   overflow-x: auto;
@@ -244,7 +244,7 @@ h1.headline {
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 0.68rem;
-  margin: 2px 0 0;
+  margin: -20px 0 0;
 }
 
 .book {
