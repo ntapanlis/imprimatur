@@ -355,6 +355,26 @@
     updateSelection();
   }
 
+  const SELECTED_SCROLL_MARGIN_PX = 16;
+
+  // A selected book widens in place (its left edge is fixed by the flex
+  // layout, only the right edge grows), so a book further along the shelf
+  // can pop its cover open past the visible edge with no indication a
+  // scroll would reveal the rest. Bring it fully into view, with a little
+  // breathing room on the leading edge.
+  function scrollSelectedIntoView(bookEl) {
+    const shelf = document.getElementById("shelf");
+    if (!shelf || !bookEl) return;
+    const shelfRect = shelf.getBoundingClientRect();
+    const bookRect = bookEl.getBoundingClientRect();
+    const bookLeftInContent = bookRect.left - shelfRect.left + shelf.scrollLeft;
+    const maxScrollLeft = Math.max(0, shelf.scrollWidth - shelf.clientWidth);
+    const target = Math.max(0, Math.min(maxScrollLeft, bookLeftInContent - SELECTED_SCROLL_MARGIN_PX));
+    // Plain assignment (animated via the .shelf scroll-behavior:smooth CSS
+    // rule) rather than scrollTo({behavior:"smooth"}) - broader support.
+    shelf.scrollLeft = target;
+  }
+
   function updateSelection() {
     document.querySelectorAll(".book").forEach((el) => {
       el.classList.toggle("selected", el.dataset.id === selectedId);
@@ -370,6 +390,9 @@
     }
     renderReview(byId(selectedId));
     panel.hidden = false;
+
+    const selectedEl = document.querySelector(".book.selected");
+    if (selectedEl) scrollSelectedIntoView(selectedEl);
   }
 
   function renderReview(book) {

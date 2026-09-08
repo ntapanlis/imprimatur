@@ -204,6 +204,7 @@ h1.headline {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
 }
