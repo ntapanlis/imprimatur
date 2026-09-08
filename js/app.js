@@ -24,7 +24,12 @@
   // remaining viewport, so these stay small and fixed.
   const MOBILE_TOP_SPACER_PX = 12;
   const MOBILE_BOTTOM_SPACER_PX = 8;
-  const MOBILE_FIT_SAFETY_PX = 4;
+  // Deliberate slack beyond the exact fit-to-viewport math, so a selected
+  // book's cover (which pops open to the same bottom edge the caption sits
+  // against - see effectiveShelfBottomGap below) lands with real breathing
+  // room instead of a razor-thin fit that real-device chrome/font metrics
+  // could tip over into clipping.
+  const MOBILE_FIT_SAFETY_PX = 28;
 
   let PX_PER_MM = DESKTOP_PX_PER_MM;
   let MIN_SPINE_WIDTH_PX = DESKTOP_MIN_SPINE_WIDTH_PX;
